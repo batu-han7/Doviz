@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canlı Döviz Uygulaması</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            text-align: center;
+        }
+        select, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+        }
+        .rate {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #007BFF;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Canlı Döviz Kurları</h1>
+        <div>
+            <select id="baseCurrency">
+                <option value="USD">USD - Amerikan Doları</option>
+                <option value="EUR">EUR - Euro</option>
+                <option value="TRY" selected>TRY - Türk Lirası</option>
+            </select>
+            <select id="targetCurrency">
+                <option value="USD">USD - Amerikan Doları</option>
+                <option value="EUR" selected>EUR - Euro</option>
+                <option value="TRY">TRY - Türk Lirası</option>
+            </select>
+            <button onclick="getExchangeRate()">Kur Bilgisi Getir</button>
+        </div>
+        <div class="rate" id="exchangeRate">
+            Lütfen bir döviz çifti seçin ve bilgileri getirin.
+        </div>
+    </div>
+
+    <script>
+        async function getExchangeRate() {
+            const baseCurrency = document.getElementById("baseCurrency").value;
+            const targetCurrency = document.getElementById("targetCurrency").value;
+            const exchangeRateElement = document.getElementById("exchangeRate");
+
+            // API'yi çağır
+            const apiUrl = `https://api.exchangerate-api.com/v4/latest/${baseCurrency}`;
+            
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error("Döviz bilgileri alınamadı.");
+                }
+                const data = await response.json();
+                const rate = data.rates[targetCurrency];
+                
+                exchangeRateElement.textContent = `1 ${baseCurrency} = ${rate} ${targetCurrency}`;
+            } catch (error) {
+                exchangeRateElement.textContent = `Hata: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
